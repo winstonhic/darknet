@@ -1,13 +1,15 @@
-GPU=0
+GPU=1
 CUDNN=0
 OPENCV=0
 OPENMP=0
+NUMPY=1
 DEBUG=0
 
-ARCH= -gencode arch=compute_30,code=sm_30 \
-      -gencode arch=compute_35,code=sm_35 \
+ARCH= -gencode arch=compute_35,code=sm_35 \
       -gencode arch=compute_50,code=[sm_50,compute_50] \
       -gencode arch=compute_52,code=[sm_52,compute_52]
+#-gencode arch=compute_30,code=sm_30 
+      
 #      -gencode arch=compute_20,code=[sm_20,sm_21] \ This one is deprecated?
 
 # This is what I use, uncomment if you know your arch and want to specify
@@ -44,6 +46,11 @@ COMMON+= -DOPENCV
 CFLAGS+= -DOPENCV
 LDFLAGS+= `pkg-config --libs opencv` -lstdc++
 COMMON+= `pkg-config --cflags opencv` 
+endif
+
+ifeq ($(NUMPY), 1) 
+COMMON+= -DNUMPY -I/usr/include/python3.6/ -I/usr/lib/python3/dist-packages/numpy/core/include/numpy/
+CFLAGS+= -DNUMPY
 endif
 
 ifeq ($(GPU), 1) 
